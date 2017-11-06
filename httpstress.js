@@ -2,10 +2,21 @@
 
 var request = require('request');
 var zibar = require('zibar');
+var opt = require('minimist')(process.argv.slice(2));
 
-var target = 'https://odintoken.io';
-//var target = 'http://localhost:3000';
-var clients = 200;
+var target = opt._[0];
+var clients = opt.c || opt.clients || 100;
+var draw_graph = opt.g || opt.graph;
+
+if (typeof draw_graph == 'string' && target === undefined) {
+	target = draw_graph;
+	draw_graph = true;
+}
+
+if (target === undefined || opt.help || opt.h) {
+	console.log(help());
+	process.exit();
+}
 
 var test_clients = [];
 var latencies = [];
@@ -13,6 +24,16 @@ var request_per_second = [];
 
 var success = 0;
 var failures = 0;
+
+function help () {
+return `Usage: httpstress [options] <url>
+
+Options:
+  -c, --clients <number>    number of clients to launch (default 100)
+  -g, --graph               draw graph when running
+  -h, --help                print this help and exit
+`;
+}
 
 function TestClient (url) {
 	this.running = true;
@@ -95,26 +116,34 @@ function displayStats () {
 	var col = process.stdout.columns;
 	var orig = 0;
 	var offset = 0;
-	if ((request_per_second.length + 20) > col) {
-		orig = request_per_second.length - col + 20;
-		offset = 5 - (orig % 5);
-	}
-	var graph = zibar(request_per_second.slice(20-col),{
-		color: 'green',
-		xAxis: {
-			origin: orig,
-			offset: offset
-		},
-		min: 0
-	});
+	var graph = '';
+	var home = '\r';
 	
-	process.stdout.write('\033[H ' + spinner[n] + status + '      \n' + graph);
+	if (draw_graph) {
+		home = '\033[H';
+		if ((request_per_second.length + 20) > col) {
+			orig = request_per_second.length - col + 20;
+			offset = 5 - (orig % 5);
+		}
+		graph = '\n' + zibar(request_per_second.slice(20-col),{
+			color: 'green',
+			xAxis: {
+				origin: orig,
+				offset: offset
+			},
+			min: 0
+		});
+	}
+	
+	process.stdout.write(home + ' ' + spinner[n] + status + '      ' + graph);
 }
 
 for (var i=0; i<clients; i++) {
 	test_clients.push(new TestClient(target));
 }
 
-process.stdout.write('\033[2J');
+if (draw_graph) {
+	process.stdout.write('\033[2J');
+}
 setInterval(displayStats, 100);
 
