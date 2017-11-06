@@ -1,6 +1,6 @@
 {
   "name": "httpstress",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple HTTP stress tester",
   "main": "httpstress.js",
   "repository": "https://github.com/slebetman/httpstress.git",
