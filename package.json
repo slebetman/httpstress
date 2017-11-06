@@ -1,8 +1,9 @@
 {
   "name": "httpstress",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple HTTP stress tester",
   "main": "httpstress",
+  "bin": {"httpstress": "./httpstress"},
   "repository": "https://github.com/slebetman/httpstress.git",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
