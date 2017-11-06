@@ -1,0 +1,14 @@
+{
+  "name": "httpstress",
+  "version": "1.0.0",
+  "description": "Simple HTTP stress tester",
+  "main": "httpstress.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "slebetman@gmail.com",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "request": "^2.83.0"
+  }
+}
