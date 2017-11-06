@@ -1,6 +1,6 @@
 {
   "name": "httpstress",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple HTTP stress tester",
   "main": "httpstress",
   "bin": {"httpstress": "./httpstress"},

@@ -80,6 +80,7 @@ var start = Date.now();
 var status = ' ...';
 var n = 0;
 var killer = 0;
+var margin = 15;
 
 function displayStats () {
 	n = (n+1) % spinner.length;
@@ -92,6 +93,10 @@ function displayStats () {
 		request_per_second.push(rps);
 		
 		status = ' Requests per second: ' + rps + ', total: ' + total;
+		
+		if (draw_graph) {
+			status = ' ' + target + '\n  ' + status;
+		}
 		
 		if (failures > 0) {
 			status += ' (' + failures + ' failures)';
@@ -110,7 +115,6 @@ function displayStats () {
 	if (killer == 0) {
 		test_clients.shift().stop();
 		test_clients.push(new TestClient(target));
-		status += ' ##';
 	} 
 	
 	var col = process.stdout.columns;
@@ -121,18 +125,20 @@ function displayStats () {
 	
 	if (draw_graph) {
 		home = '\033[H';
-		if ((request_per_second.length + 20) > col) {
-			orig = request_per_second.length - col + 20;
-			offset = 5 - (orig % 5);
+		if (request_per_second.length > 0) {
+			if ((request_per_second.length + margin) > col) {
+				orig = request_per_second.length - col + margin;
+				offset = 5 - (orig % 5);
+			}
+			graph = '\n\n' + zibar(request_per_second.slice(margin-col),{
+				color: 'green',
+				xAxis: {
+					origin: orig,
+					offset: offset
+				},
+				min: 0
+			});
 		}
-		graph = '\n' + zibar(request_per_second.slice(20-col),{
-			color: 'green',
-			xAxis: {
-				origin: orig,
-				offset: offset
-			},
-			min: 0
-		});
 	}
 	
 	process.stdout.write(home + ' ' + spinner[n] + status + '      ' + graph);
