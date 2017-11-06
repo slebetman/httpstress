@@ -9,6 +9,7 @@
   "author": "slebetman@gmail.com",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "zibar": "^1.0.15"
   }
 }

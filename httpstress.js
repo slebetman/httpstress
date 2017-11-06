@@ -1,12 +1,15 @@
 #! /usr/bin/env node
 
 var request = require('request');
+var zibar = require('zibar');
 
 var target = 'https://odintoken.io';
+//var target = 'http://localhost:3000';
 var clients = 200;
 
 var test_clients = [];
 var latencies = [];
+var request_per_second = [];
 
 var success = 0;
 var failures = 0;
@@ -64,8 +67,10 @@ function displayStats () {
 	if (n == 0) {
 		var now = Date.now();
 		var total = success+failures;
+		var rps = Math.round(success / ((now - start)/1000));
+		request_per_second.push(rps);
 		
-		status = ' Requests per second: ' + Math.round(total / ((now - start)/1000)) + ', total: ' + total;
+		status = ' Requests per second: ' + rps + ', total: ' + total;
 		
 		if (failures > 0) {
 			status += ' (' + failures + ' failures)';
@@ -87,12 +92,29 @@ function displayStats () {
 		status += ' ##';
 	} 
 	
-	process.stdout.write('\r ' + spinner[n] + status + '     ');
+	var col = process.stdout.columns;
+	var orig = 0;
+	var offset = 0;
+	if ((request_per_second.length + 20) > col) {
+		orig = request_per_second.length - col + 20;
+		offset = 5 - (orig % 5);
+	}
+	var graph = zibar(request_per_second.slice(20-col),{
+		color: 'green',
+		xAxis: {
+			origin: orig,
+			offset: offset
+		},
+		min: 0
+	});
+	
+	process.stdout.write('\033[H ' + spinner[n] + status + '      \n' + graph);
 }
 
 for (var i=0; i<clients; i++) {
 	test_clients.push(new TestClient(target));
 }
 
+process.stdout.write('\033[2J');
 setInterval(displayStats, 100);
 
