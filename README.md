@@ -1,4 +1,4 @@
-#httpstress
+# httpstress
 ### Http stress testing / benchmarking tool
 
     Usage: httpstress [options] <url>
