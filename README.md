@@ -1,6 +1,8 @@
 # httpstress
 ### Http stress testing / benchmarking tool
 
+![screenshot](https://github.com/slebetman/httpstress/raw/master/screenshot.png)
+
 ## Installation
 
 Just install with npm:
