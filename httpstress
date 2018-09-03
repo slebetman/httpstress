@@ -2,11 +2,17 @@
 
 var request = require('request');
 var zibar = require('zibar');
+var q = require('query-string');
 var opt = require('minimist')(process.argv.slice(2));
 
 var target = opt._[0];
 var clients = opt.c || opt.clients || 100;
 var draw_graph = opt.g || opt.graph;
+var post = opt.p || opt.post || undefined;
+var method = 'GET';
+if (post !== undefined) {
+	method = 'POST';
+}
 
 if (typeof draw_graph == 'string' && target === undefined) {
 	target = draw_graph;
@@ -32,6 +38,7 @@ Options:
   -c, --clients <number>    number of clients to launch (default 100)
   -g, --graph               draw graph when running
   -h, --help                print this help and exit
+  -p, --post <data>         perform a POST request instead of a GET
 `;
 }
 
@@ -45,13 +52,19 @@ TestClient.prototype = {
 	run: function (url) {
 		var self = this;
 		var start = Date.now();
-		
-		request({
+		var options = {
 			url: url,
+			method: method,
 			agentOptions: {
 				keepAlive: true
 			}
-		},function(err,res,body){
+		};
+		
+		if (method == 'POST' && post != '') {
+			options.form = q.parse(post);
+		}
+		
+		request(options, function(err,res,body){
 			if (err) {
 				failures++;
 			}
@@ -95,7 +108,7 @@ function displayStats () {
 		status = ' Requests per second: ' + rps + ', total: ' + total;
 		
 		if (draw_graph) {
-			status = ' ' + target + '\n  ' + status;
+			status = ' ' + method + ' ' + target + '\n  ' + status;
 		}
 		
 		if (failures > 0) {

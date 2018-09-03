@@ -3,7 +3,9 @@
   "version": "1.0.4",
   "description": "Simple HTTP stress tester",
   "main": "httpstress",
-  "bin": {"httpstress": "./httpstress"},
+  "bin": {
+    "httpstress": "./httpstress"
+  },
   "repository": "https://github.com/slebetman/httpstress.git",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +14,8 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "minimist": "^1.2.0",
-    "request": "^2.83.0",
+    "query-string": "^6.1.0",
+    "request": "^2.88.0",
     "zibar": "^1.0.15"
   }
 }
