@@ -2,7 +2,6 @@
 
 var request = require('request');
 var zibar = require('zibar');
-var q = require('query-string');
 var opt = require('minimist')(process.argv.slice(2));
 
 var target = opt._[0];
@@ -61,7 +60,7 @@ TestClient.prototype = {
 		};
 		
 		if (method == 'POST' && post != '') {
-			options.form = q.parse(post);
+			options.body = post;
 		}
 		
 		request(options, function(err,res,body){
