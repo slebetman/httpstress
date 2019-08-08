@@ -8,9 +8,22 @@ var target = opt._[0];
 var clients = opt.c || opt.clients || 100;
 var draw_graph = opt.g || opt.graph;
 var post = opt.p || opt.post || undefined;
+var headers = opt.h || opt.header || undefined;
 var method = 'GET';
 if (post !== undefined) {
 	method = 'POST';
+}
+
+if (headers && typeof headers == 'string') {
+	headers = [ headers ];
+	var tmp = {};
+	headers.forEach(function(x) {
+		var h = x.split(':');
+		var key = h[0].replace(/^\s+|\s+$/g,'');
+		var val = h[1].replace(/^\s+|\s+$/g,'');
+		tmp[key] = val;
+	});
+	headers = tmp;
 }
 
 if (typeof draw_graph == 'string' && target === undefined) {
@@ -37,7 +50,11 @@ Options:
   -c, --clients <number>    number of clients to launch (default 100)
   -g, --graph               draw graph when running
   -h, --help                print this help and exit
+  -H, --header <header>     define a header: 'Key: value'
   -p, --post <data>         perform a POST request instead of a GET
+  
+Example:
+  httpstress -g -H 'Cookie: session=12345' http://example.com/test
 `;
 }
 
@@ -58,6 +75,10 @@ TestClient.prototype = {
 				keepAlive: true
 			}
 		};
+		
+		if (headers) {
+			options.headers = headers;
+		}
 		
 		if (method == 'POST' && post != '') {
 			options.body = post;
