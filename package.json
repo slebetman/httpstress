@@ -1,6 +1,6 @@
 {
   "name": "httpstress",
-  "version": "1.2.2",
+  "version": "1.3",
   "description": "Simple HTTP stress tester",
   "main": "httpstress",
   "bin": {
@@ -14,7 +14,7 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "minimist": "^1.2.5",
-    "request": "^2.88.2",
+    "undici": "^5.4.0",
     "zibar": "^1.0.15"
   }
 }
